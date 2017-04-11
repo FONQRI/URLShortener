@@ -1,9 +1,11 @@
 #include "requestmanager.h"
 
+TemplateCache *RequestManager::templateCache = 0;
+StaticFileController *RequestManager::staticFileController = 0;
+
 void RequestManager::createDatabase()
 {
-    QString path =
-        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QString path = QDir::currentPath();
 
     database = QSqlDatabase::addDatabase("QSQLITE");
     database.setDatabaseName(path + QDir::separator() + "DATABASE");
@@ -84,7 +86,6 @@ void RequestManager::passToNextChar(int place)
 RequestManager::RequestManager(QObject *parent) : HttpRequestHandler(parent)
 {
     createDatabase();
-
     getLastID();
 }
 
@@ -92,7 +93,11 @@ void RequestManager::service(HttpRequest &request, HttpResponse &response)
 {
     QString path = request.getPath();
 
-    if (path == "/")
+    if (path == "/style.css")
+        staticFileController->service(request, response);
+    else if (path == "/")
+        response.redirect("/add.html");
+    else if (path == "/add.html")
         add(request, response);
     else
         get(request, response);
@@ -100,14 +105,13 @@ void RequestManager::service(HttpRequest &request, HttpResponse &response)
 
 void RequestManager::add(HttpRequest &request, HttpResponse &response)
 {
-    QFile f(":/add.html");
-    f.open(QIODevice::ReadOnly);
-
     QString url = request.getParameter("link");
+    response.setHeader("Content-Type", "text/html; charset=UTF-8");
 
     if (url.isEmpty())
         {
-            response.write(f.readAll(), true);
+            Template T = templateCache->getTemplate("add");
+            response.write(T.toUtf8(), true);
             return;
         }
 
@@ -126,20 +130,14 @@ void RequestManager::get(HttpRequest &request, HttpResponse &response)
     QString url = request.getPath();
     url.remove(0, 1);
 
-    qDebug() << url;
-
-    if (url.contains(" "))
-        {
-            response.write("404", true);
-            return;
-        }
-
     QString C = QString("SELECT url FROM urls WHERE shorturl='%1'").arg(url);
     query->exec(C);
 
     if (query->last())
-        //        response.write(query->value(0).toByteArray(), true);
         response.redirect(query->value(0).toByteArray());
     else
-        return response.write("404", true);
+        {
+            response.setHeader("Content-Type", "text/html; charset=UTF-8");
+            response.write(templateCache->getTemplate("404").toUtf8(), true);
+        }
 }

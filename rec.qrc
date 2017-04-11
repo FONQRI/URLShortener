@@ -1,7 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>config.ini</file>
-        <file>style.css</file>
-        <file>add.html</file>
+        <file>data/add.html</file>
+        <file>data/style.css</file>
+        <file>data/404.html</file>
     </qresource>
 </RCC>

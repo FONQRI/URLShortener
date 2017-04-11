@@ -2,6 +2,8 @@
 #define REQUESTMANAGER_H
 
 #include <httprequesthandler.h>
+#include <staticfilecontroller.h>
+#include <templatecache.h>
 #include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
@@ -27,6 +29,9 @@ class RequestManager : public HttpRequestHandler
 
 public:
     explicit RequestManager(QObject *parent = 0);
+
+    static TemplateCache *templateCache;
+    static StaticFileController *staticFileController;
 
     void service(HttpRequest &request, HttpResponse &response);
     void add(HttpRequest &request, HttpResponse &response);

@@ -16,25 +16,46 @@ using namespace QtWebApp;
 
 QString createConfigFile()
 {
-    QString path =
-        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QString path = QDir::currentPath();
+    QString configPath = path + QDir::separator() + "config.ini";
 
-    if (!QDir(path).exists()) qDebug() << QDir().mkdir(path);
-    path = path + QDir::separator() + "config.ini";
+    if (!QFile(configPath).exists()) QFile::copy(":/config.ini", configPath);
+    QFile(configPath)
+        .setPermissions(QFileDevice::WriteUser | QFileDevice::ReadUser);
 
-    if (!QFile(path).exists()) QFile::copy(":/config.ini", path);
+    QString workDir = path + QDir::separator() + "data";
+    if (!QDir(workDir).exists()) QDir().mkdir(workDir);
 
-    return path;
+    for (const QString &file : QDir(":/data").entryList())
+        {
+            QString filePath = workDir + QDir::separator() + file;
+            QFile::copy(":/data/" + file, filePath);
+            QFile(filePath).setPermissions(QFileDevice::WriteUser |
+                                           QFileDevice::ReadUser);
+        }
+
+    return configPath;
 }
 
 int main(int argc, char *argv[])
 {
     QCoreApplication A(argc, argv);
 
-    QSettings S(createConfigFile(), QSettings::IniFormat, &A);
-    S.beginGroup("listener");
+    QString configFile = createConfigFile();
 
-    HttpListener *V = new HttpListener(&S, new RequestManager(&A), &A);
+    QSettings *S = new QSettings(configFile, QSettings::IniFormat, &A);
+    S->beginGroup("listener");
+
+    QSettings *S2 = new QSettings(configFile, QSettings::IniFormat, &A);
+    S2->beginGroup("files");
+
+    QSettings *S3 = new QSettings(configFile, QSettings::IniFormat, &A);
+    S3->beginGroup("templates");
+
+    RequestManager::templateCache = new TemplateCache(S3, &A);
+    RequestManager::staticFileController = new StaticFileController(S2, &A);
+
+    HttpListener *V = new HttpListener(S, new RequestManager(&A), &A);
 
     return A.exec();
 }

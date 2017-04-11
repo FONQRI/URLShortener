@@ -13,6 +13,7 @@ SOURCES += main.cpp \
     requestmanager.cpp
 
 include("httpserver/httpserver.pri")
+include("templateengine/templateengine.pri")
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -30,3 +31,5 @@ RESOURCES += \
 
 HEADERS += \
     requestmanager.h
+
+DISTFILES +=
