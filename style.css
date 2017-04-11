@@ -1,0 +1,22 @@
+.mainDiv{
+
+text-align:
+center;top:
+40%;left:40%;
+position:absolute;
+}
+.entryUrl{
+background: none; border: 2px solid;border-radius: 7px;width:350px;height:50px;
+
+
+}
+.submitBtn{
+
+
+background: none;background-color:#FF5722; color:#222; border: 2px solid;border-radius: 7px;width:150px;height:50px;
+}
+
+.showLink{
+margin-top: 30px;width:450px;height:50px;border: 2px solid;border-radius: 7px;background-color:#2196F3;color:EEEEEE;
+
+}

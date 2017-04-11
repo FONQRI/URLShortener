@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>config.ini</file>
+        <file>style.css</file>
+        <file>add.html</file>
+    </qresource>
+</RCC>
