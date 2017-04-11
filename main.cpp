@@ -17,24 +17,27 @@ using namespace QtWebApp;
 QString createConfigFile()
 {
     QString path = QDir::currentPath();
-    QString configPath = path + QDir::separator() + "config.ini";
+    QString configName = path + QDir::separator() + "config.ini";
+    QFile config(path + QDir::separator() + "config.ini");
 
-    if (!QFile(configPath).exists()) QFile::copy(":/config.ini", configPath);
-    QFile(configPath)
-        .setPermissions(QFileDevice::WriteUser | QFileDevice::ReadUser);
+    if (config.exists()) config.remove();
+
+    QFile::copy(":/config.ini", config.fileName());
+    config.setPermissions(QFileDevice::WriteUser | QFileDevice::ReadUser);
 
     QString workDir = path + QDir::separator() + "data";
     if (!QDir(workDir).exists()) QDir().mkdir(workDir);
 
-    for (const QString &file : QDir(":/data").entryList())
+    for (const QString &F : QDir(":/data").entryList())
         {
-            QString filePath = workDir + QDir::separator() + file;
-            QFile::copy(":/data/" + file, filePath);
-            QFile(filePath).setPermissions(QFileDevice::WriteUser |
-                                           QFileDevice::ReadUser);
+            QFile file(workDir + QDir::separator() + F);
+            if (file.exists()) file.remove();
+
+            QFile::copy(":/data/" + F, file.fileName());
+            file.setPermissions(QFileDevice::WriteUser | QFileDevice::ReadUser);
         }
 
-    return configPath;
+    return configName;
 }
 
 int main(int argc, char *argv[])
