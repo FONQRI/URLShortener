@@ -111,6 +111,8 @@ void RequestManager::add(HttpRequest &request, HttpResponse &response)
     if (url.isEmpty())
         {
             Template T = templateCache->getTemplate("add");
+            T.setVariable("shorterLink", shorterLink);
+            T.setCondition("shorted", shorterLink != nullptr);
             response.write(T.toUtf8(), true);
             return;
         }

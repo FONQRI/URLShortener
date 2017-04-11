@@ -32,6 +32,7 @@ public:
 
     static TemplateCache *templateCache;
     static StaticFileController *staticFileController;
+    QString shorterLink = nullptr;
 
     void service(HttpRequest &request, HttpResponse &response);
     void add(HttpRequest &request, HttpResponse &response);

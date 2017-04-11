@@ -1,9 +1,20 @@
 <!doctype html>
 <html>
-  <form method="post" action="/" >
-    <input name= "link" type="text"/>
-    <input type="submit" value = "Shorten"/>
-  </form>
-</html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+        <div class ="container">
+                <div class="centerDiv">
+                        <form class="formClass" method="post" action="/" >
+                        <input class="inputText" name= "link" type="text"/>
+                        <input class="submitButton" type="submit" value = "Shorten"/>
+                        </form>
+                        {if shorted}
+                            <div class = "showShortLink">
+                                                            <a href="{shorterLink}">{shorterLink}</a>
+                             </div>
+                        {end shorted}
 
-HOSTNAME
+                </div>
+        </div>
+</html>
