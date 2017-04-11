@@ -8,6 +8,12 @@
 
 using namespace QtWebApp;
 
+// TODO
+// the user should be able to run the app with the host name given to it.
+// the html part should be more beautiful.
+// the should be a capcha or something to increase security and aviod adding
+// urls with programs instead of people
+
 QString createConfigFile()
 {
     QString path =
