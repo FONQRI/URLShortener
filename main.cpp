@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QSettings>
 #include <QStandardPaths>
+#include <QTextStream>
 
 using namespace QtWebApp;
 
@@ -40,6 +41,28 @@ QString createConfigFile()
     return configName;
 }
 
+void changeHostInHTML(const QString &host)
+{
+    QString path = QDir::currentPath() + QDir::separator() + "data" +
+                   QDir::separator() + "add.html";
+
+    QFile file(path);
+    file.open(QIODevice::ReadOnly);
+
+    QString data = file.readAll();
+    data.replace("HOSTNAME", host);
+
+    file.close();
+
+    QFile file2(path);
+    file2.open(QIODevice::WriteOnly);
+    QTextStream S(&file2);
+
+    S << data;
+    S.flush();
+    file2.close();
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication A(argc, argv);
@@ -48,6 +71,8 @@ int main(int argc, char *argv[])
 
     QSettings *S = new QSettings(configFile, QSettings::IniFormat, &A);
     S->beginGroup("listener");
+
+    changeHostInHTML(S->value("host", "localhost").toString());
 
     QSettings *S2 = new QSettings(configFile, QSettings::IniFormat, &A);
     S2->beginGroup("files");
